@@ -1,0 +1,5 @@
+MASS/mass-best-tool/target/.*
+*.lst
+*.xml
+*.jar
+*.properties
