@@ -52,11 +52,12 @@ public class Centroid implements Serializable {
   //computes new centroids based on data in membership
   public void computeNewCentroids(){
     Vector<int[]> newCenters = new Vector<>();
-    int sumX = 0;
-    int sumY = 0;
+    int sumX;
+    int sumY;
     int total;
-
     for(int i = 0; i < centroids.size(); i++){
+      sumX = 0;
+      sumY = 0;
       Vector<int[]> points = membership.get(i);
       total = points.size();
       for(int[] point : points){
@@ -71,7 +72,6 @@ public class Centroid implements Serializable {
         newCenters.add(new int[]{0,0});
       }
     }
-
     initChosen(newCenters);
   }
 

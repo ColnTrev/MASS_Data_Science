@@ -4,8 +4,9 @@ import edu.uw.bothell.css.dsl.MASS.logging.*;
 import java.util.*;
 public class Tool extends Agent {
   public static final int cluster_ = 0;
-  public static final int distribute_ = 1;
+  public static final int init_ = 1;
   public static final int collect_ = 2;
+  public static final int recalculate_ = 3;
 
   private Centroid cents;
 
@@ -16,13 +17,14 @@ public class Tool extends Agent {
 
   public Tool(Object args){
     super();
-    cents = new Centroid((Centroid)args);
+    cents = new Centroid();
   }
   public Object callMethod(int functionId, Object args){
     switch(functionId){
       case cluster_: return cluster();
-      case distribute_: return distribute(args);
+      case init_: return init();
       case collect_: return collect(args);
+      case recalculate_: return newCentroid();
     }
     return null;
   }
@@ -30,13 +32,12 @@ public class Tool extends Agent {
 
   public Object cluster(){
     Vector<int[]> data = ((Storage)getPlace()).getDataPoints();
-    int[] frank = new int[3];
+    int[] member = new int[3];
     for(int[] arr : data){
-      int member = (int)findCluster(arr);
-      frank[0] = member;
-      frank[1] = arr[0];
-      frank[2] = arr[1];
-      cents.addMember(frank);
+      member[0] = (int)findCluster(arr);
+      member[1] = arr[0];
+      member[2] = arr[1];
+      cents.addMember(member);
     }
     return null;
   }
@@ -61,10 +62,18 @@ public class Tool extends Agent {
     return (int)Math.sqrt((xs*xs) + (ys*ys));
   }
 
-  public Object distribute(Object args){
-    cents = new Centroid((Centroid)args);
+  public Object init(){
+    Vector<int[]> data = ((Storage)getPlace()).getDataPoints();
+    cents.initRandom(data);
     return null;
   }
+
+  public Object newCentroid(){
+    cents.computeNewCentroids();
+    cents.clearMembership();
+    return null;
+  }
+
   public Centroid collect(Object args){
     return cents;
   }
